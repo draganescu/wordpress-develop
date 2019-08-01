@@ -11,8 +11,6 @@
 /** Make sure that the WordPress bootstrap has run before continuing. */
 require( dirname( __FILE__ ) . '/wp-load.php' );
 
-	delete_option( 'admin_email_lifespan' );
-
 // Redirect to HTTPS login if forced to use SSL.
 if ( force_ssl_admin() && ! is_ssl() ) {
 	if ( 0 === strpos( $_SERVER['REQUEST_URI'], 'http' ) ) {
@@ -503,7 +501,7 @@ $interim_login = isset( $_REQUEST['interim-login'] );
 $login_link_separator = apply_filters( 'login_link_separator', ' | ' );
 
 switch ( $action ) {
-	
+
 	case 'confirm_admin_email':
 
 		if( ! is_user_logged_in() ) {
@@ -600,7 +598,7 @@ switch ( $action ) {
 			<div class="admin-email__actions">
 				<div class="admin-email__actions-primary">
 					<?php
-		
+
 					$change_link = admin_url( 'options-general.php?highlight=confirm_admin_email' );
 					?>
 					<a class="button button-large" href="<?php echo $change_link ?>">
@@ -611,7 +609,7 @@ switch ( $action ) {
 				<div class="admin-email__actions-secondary">
 					<p class="admin-email__later">
 					<?php
-		
+
 						$remind_me_link = wp_login_url( $redirect_to ) .
 							'&' . 'action=confirm_admin_email' .
 							'&' . 'remind_me_later=true';
@@ -619,7 +617,7 @@ switch ( $action ) {
 						<a href="<?php echo $remind_me_link ?>"><?php _e( 'Remind me later' ) ?></a>
 					</p>
 				</div>
-				
+
 			</div>
 		</form>
 
@@ -627,8 +625,8 @@ switch ( $action ) {
 		login_footer();
 
 	break;
-	
-	
+
+
 
 	case 'postpass':
 		if ( ! array_key_exists( 'post_password', $_POST ) ) {
