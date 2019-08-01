@@ -137,7 +137,7 @@ p {
 .login-action-confirm_admin_email #login {
 	width: 60vw;
 	margin-top: -2vh;
-	
+
 }
 
 @media screen and (max-width: 700px) {
@@ -171,6 +171,8 @@ p {
 }
 
 .admin-email__details--small {
+	margin-top: 20px;
+	margin-bottom: 20px;
 	font-size: .9em;
 }
 

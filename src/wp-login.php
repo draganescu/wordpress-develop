@@ -520,8 +520,10 @@ switch ( $action ) {
 			wp_safe_redirect( $redirect_to );
 		}
 
-		$admin_email_lifespan = time() + ADMIN_EMAIL_MAX_AGE;
-		$admin_email_remind_in = time() + round ( ADMIN_EMAIL_MAX_AGE/4 );
+        $admin_email_max_age = apply_filters( 'admin_email_max_age', 180 * DAY_IN_SECONDS );
+
+        $admin_email_lifespan = time() + $admin_email_max_age;
+		$admin_email_remind_in = time() + round ( $admin_email_max_age/4 );
 
 		if ( ! empty( $_GET[ 'remind_me_later' ] ) ) {
 			update_option( 'admin_email_lifespan', $admin_email_remind_in );
@@ -1094,6 +1096,8 @@ switch ( $action ) {
 		 * @param WP_User|WP_Error $user                  WP_User object if login was successful, WP_Error object otherwise.
 		 */
 		$redirect_to = apply_filters( 'login_redirect', $redirect_to, $requested_redirect_to, $user );
+
+        $redirect_to = wp_confirm_admin_email( $redirect_to, $requested_redirect_to, $user );
 
 		if ( ! is_wp_error( $user ) && ! $reauth ) {
 			if ( $interim_login ) {
