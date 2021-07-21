@@ -35,6 +35,7 @@ class Tests_General_Template extends WP_UnitTestCase {
 	/**
 	 * @group site_icon
 	 * @covers ::get_site_icon_url
+	 * @requires function imagejpeg
 	 */
 	function test_get_site_icon_url() {
 		$this->assertEmpty( get_site_icon_url() );
@@ -49,6 +50,7 @@ class Tests_General_Template extends WP_UnitTestCase {
 	/**
 	 * @group site_icon
 	 * @covers ::site_icon_url
+	 * @requires function imagejpeg
 	 */
 	function test_site_icon_url() {
 		$this->expectOutputString( '' );
@@ -62,6 +64,7 @@ class Tests_General_Template extends WP_UnitTestCase {
 	/**
 	 * @group site_icon
 	 * @covers ::has_site_icon
+	 * @requires function imagejpeg
 	 */
 	function test_has_site_icon() {
 		$this->assertFalse( has_site_icon() );
@@ -103,6 +106,7 @@ class Tests_General_Template extends WP_UnitTestCase {
 	/**
 	 * @group site_icon
 	 * @covers ::wp_site_icon
+	 * @requires function imagejpeg
 	 */
 	function test_wp_site_icon() {
 		$this->expectOutputString( '' );
@@ -125,6 +129,7 @@ class Tests_General_Template extends WP_UnitTestCase {
 	/**
 	 * @group site_icon
 	 * @covers ::wp_site_icon
+	 * @requires function imagejpeg
 	 */
 	function test_wp_site_icon_with_filter() {
 		$this->expectOutputString( '' );
@@ -304,7 +309,7 @@ class Tests_General_Template extends WP_UnitTestCase {
 		$this->_set_custom_logo();
 		$custom_logo = get_custom_logo();
 		$this->assertNotEmpty( $custom_logo );
-		$this->assertInternalType( 'string', $custom_logo );
+		$this->assertIsString( $custom_logo );
 
 		$this->_remove_custom_logo();
 		$this->assertEmpty( get_custom_logo() );
@@ -568,6 +573,7 @@ class Tests_General_Template extends WP_UnitTestCase {
 
 	/**
 	 * @ticket 9862
+	 * @ticket 51166
 	 * @dataProvider data_selected_and_checked_with_equal_values
 	 *
 	 * @covers ::selected
@@ -595,6 +601,7 @@ class Tests_General_Template extends WP_UnitTestCase {
 
 	/**
 	 * @ticket 9862
+	 * @ticket 51166
 	 * @dataProvider data_selected_and_checked_with_non_equal_values
 	 *
 	 * @covers ::selected

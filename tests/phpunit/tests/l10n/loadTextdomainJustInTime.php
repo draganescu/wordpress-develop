@@ -110,7 +110,7 @@ class Tests_L10n_LoadTextdomainJustInTime extends WP_UnitTestCase {
 		remove_filter( 'override_load_textdomain', '__return_true' );
 		remove_filter( 'locale', array( $this, 'filter_set_locale_to_german' ) );
 
-		$this->assertTrue( $translations instanceof NOOP_Translations );
+		$this->assertInstanceOf( 'NOOP_Translations', $translations );
 	}
 
 	/**
@@ -211,8 +211,6 @@ class Tests_L10n_LoadTextdomainJustInTime extends WP_UnitTestCase {
 
 		$expected = i18n_plugin_test();
 
-		set_current_screen( 'front' );
-
 		$this->assertSame( 'Das ist ein Dummy Plugin', $expected );
 	}
 
@@ -228,7 +226,6 @@ class Tests_L10n_LoadTextdomainJustInTime extends WP_UnitTestCase {
 
 		$expected = i18n_theme_test();
 
-		set_current_screen( 'front' );
 		switch_theme( WP_DEFAULT_THEME );
 
 		$this->assertSame( 'Das ist ein Dummy Theme', $expected );

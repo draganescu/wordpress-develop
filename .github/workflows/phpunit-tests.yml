@@ -21,6 +21,13 @@ on:
   schedule:
     - cron: '0 0 * * 0'
 
+# Cancels all previous workflow runs for pull requests that have not completed.
+concurrency:
+  # The concurrency group contains the workflow name and the branch name for pull requests
+  # or the commit hash for any other events.
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
+  cancel-in-progress: true
+
 env:
   PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: ${{ true }}
   COMPOSER_INSTALL: ${{ false }}
@@ -30,27 +37,12 @@ env:
   SLOW_TESTS: 'external-http,media,restapi'
 
 jobs:
-  # Sets up the workflow for testing.
-  #
-  # Performs the following steps:
-  # - Cancels all previous workflow runs for pull requests that have not completed.
-  setup-workflow:
-    name: Setup Workflow
-    runs-on: ubuntu-latest
-    if: ${{ github.repository == 'WordPress/wordpress-develop' || github.event_name == 'pull_request' }}
-
-    steps:
-      - name: Cancel previous runs of this workflow (pull requests only)
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: styfle/cancel-workflow-action@3d86a7cc43670094ac248017207be0295edbc31d # v0.8.0
-
   # Runs the PHPUnit tests for WordPress.
   #
   # Performs the following steps:
   # - Set environment variables.
   # - Sets up the environment variables needed for testing with memcached (if desired).
   # - Installs NodeJS 14.
-  # - Sets up caching for NPM.
   # - Installs NPM dependencies
   # - Configures caching for Composer.
   # - Installs Composer dependencies (if desired).
@@ -63,6 +55,7 @@ jobs:
   # - Logs debug information about what's installed within the WordPress Docker containers.
   # - Install WordPress within the Docker container.
   # - Run the PHPUnit tests.
+  # - Ensures version-controlled files are not modified or deleted.
   # - Checks out the WordPress Test reporter repository.
   # - Reconnect the directory to the Git repository.
   # - Submit the test results to the WordPress.org host test results.
@@ -121,18 +114,10 @@ jobs:
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # v2.3.4
 
       - name: Install NodeJS
-        uses: actions/setup-node@46071b5c7a2e0c34e49c3cb8a0e792e86e18d5ea # v2.1.5
+        uses: actions/setup-node@38d90ce44d5275ad62cc48384b3d8a58c500bb5f # v2.2.2
         with:
           node-version: 14
-
-      - name: Use cached Node modules
-        uses: actions/cache@26968a09c0ea4f3e233fdddbafd1166051a095f6 # v2.1.4
-        env:
-          cache-name: cache-node-modules
-        with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          cache: npm
 
       - name: Install Dependencies
         run: npm ci
@@ -236,6 +221,9 @@ jobs:
       - name: Run (xDebug) tests
         if: ${{ ! matrix.split_slow }}
         run: LOCAL_PHP_XDEBUG=true npm run test:${{ env.PHPUNIT_SCRIPT }} -- -v --group xdebug --exclude-group __fakegroup__
+
+      - name: Ensure version-controlled files are not modified or deleted
+        run: git diff --exit-code
 
       - name: Checkout the WordPress Test Reporter
         if: ${{ github.repository == 'WordPress/wordpress-develop' && github.ref == 'refs/heads/master' && matrix.report }}
