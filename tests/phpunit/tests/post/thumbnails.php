@@ -68,19 +68,9 @@ class Tests_Post_Thumbnail_Template extends WP_UnitTestCase {
 		$this->assertSame( self::$attachment_id, get_post_thumbnail_id() );
 	}
 
-	/**
-	 * Ensure `update_post_thumbnail_cache()` works when querying post objects.
-	 *
-	 * @ticket 59521
-	 * @ticket 30017
-	 * @ticket 33968
-	 *
-	 * @covers ::update_post_thumbnail_cache
-	 */
-	public function test_update_post_thumbnail_cache_when_querying_full_post_objects() {
+	public function test_update_post_thumbnail_cache() {
 		set_post_thumbnail( self::$post, self::$attachment_id );
 
-		// Test case where `$query->posts` should return Array of post objects.
 		$query = new WP_Query(
 			array(
 				'post_type' => 'any',
@@ -89,38 +79,11 @@ class Tests_Post_Thumbnail_Template extends WP_UnitTestCase {
 			)
 		);
 
-		$this->assertFalse( $query->thumbnails_cached, 'Thumbnails should not be cached prior to calling update_post_thumbnail_cache().' );
+		$this->assertFalse( $query->thumbnails_cached );
 
 		update_post_thumbnail_cache( $query );
 
-		$this->assertTrue( $query->thumbnails_cached, 'Thumbnails should be cached after calling update_post_thumbnail_cache().' );
-	}
-
-	/**
-	 * Ensure `update_post_thumbnail_cache()` works when querying post IDs.
-	 *
-	 * @ticket 59521
-	 *
-	 * @covers ::update_post_thumbnail_cache
-	 */
-	public function test_update_post_thumbnail_cache_when_querying_post_id_field() {
-		set_post_thumbnail( self::$post, self::$attachment_id );
-
-		// Test case where `$query2->posts` should return Array of post IDs.
-		$query = new WP_Query(
-			array(
-				'post_type' => 'any',
-				'post__in'  => array( self::$post->ID ),
-				'orderby'   => 'post__in',
-				'fields'    => 'ids',
-			)
-		);
-
-		$this->assertFalse( $query->thumbnails_cached, 'Thumbnails should not be cached prior to calling update_post_thumbnail_cache().' );
-
-		update_post_thumbnail_cache( $query );
-
-		$this->assertTrue( $query->thumbnails_cached, 'Thumbnails should be cached after calling update_post_thumbnail_cache().' );
+		$this->assertTrue( $query->thumbnails_cached );
 	}
 
 	/**

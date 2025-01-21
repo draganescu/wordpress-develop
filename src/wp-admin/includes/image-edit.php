@@ -826,10 +826,9 @@ function wp_restore_image( $post_id ) {
 				}
 			} elseif ( isset( $meta['width'], $meta['height'] ) ) {
 				$backup_sizes[ "full-$suffix" ] = array(
-					'width'    => $meta['width'],
-					'height'   => $meta['height'],
-					'filesize' => $meta['filesize'],
-					'file'     => $parts['basename'],
+					'width'  => $meta['width'],
+					'height' => $meta['height'],
+					'file'   => $parts['basename'],
 				);
 			}
 		}
@@ -840,14 +839,6 @@ function wp_restore_image( $post_id ) {
 		$meta['file']   = _wp_relative_upload_path( $restored_file );
 		$meta['width']  = $data['width'];
 		$meta['height'] = $data['height'];
-		if ( isset( $data['filesize'] ) ) {
-			/*
-			 * Restore the original filesize if it was backed up.
-			 *
-			 * See https://core.trac.wordpress.org/ticket/59684.
-			 */
-			$meta['filesize'] = $data['filesize'];
-		}
 	}
 
 	foreach ( $default_sizes as $default_size ) {
@@ -1006,9 +997,8 @@ function wp_save_image( $post_id ) {
 		}
 	}
 
-	$saved_image = wp_save_image_file( $new_path, $img, $post->post_mime_type, $post_id );
 	// Save the full-size file, also needed to create sub-sizes.
-	if ( ! $saved_image ) {
+	if ( ! wp_save_image_file( $new_path, $img, $post->post_mime_type, $post_id ) ) {
 		$return->error = esc_js( __( 'Unable to save the image.' ) );
 		return $return;
 	}
@@ -1028,10 +1018,9 @@ function wp_save_image( $post_id ) {
 
 		if ( $tag ) {
 			$backup_sizes[ $tag ] = array(
-				'width'    => $meta['width'],
-				'height'   => $meta['height'],
-				'filesize' => $meta['filesize'],
-				'file'     => $basename,
+				'width'  => $meta['width'],
+				'height' => $meta['height'],
+				'file'   => $basename,
 			);
 		}
 
@@ -1039,10 +1028,9 @@ function wp_save_image( $post_id ) {
 
 		$meta['file'] = _wp_relative_upload_path( $new_path );
 
-		$size             = $img->get_size();
-		$meta['width']    = $size['width'];
-		$meta['height']   = $size['height'];
-		$meta['filesize'] = $saved_image['filesize'];
+		$size           = $img->get_size();
+		$meta['width']  = $size['width'];
+		$meta['height'] = $size['height'];
 
 		if ( $success && ( 'nothumb' === $target || 'all' === $target ) ) {
 			$sizes = get_intermediate_image_sizes();

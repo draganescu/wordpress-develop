@@ -1,7 +1,5 @@
 <?php
 /**
- * Tests for the links_add_target() function.
- *
  * @group formatting
  *
  * @covers ::links_add_target
@@ -9,7 +7,7 @@
 class Tests_Formatting_LinksAddTarget extends WP_UnitTestCase {
 
 	/**
-	 * @ticket 26164
+	 * Tests the links_add_target() function.
 	 *
 	 * @dataProvider data_links_add_target
 	 */
@@ -28,10 +26,10 @@ class Tests_Formatting_LinksAddTarget extends WP_UnitTestCase {
 	 *
 	 * @return array {
 	 *     @type array {
-	 *         @type string     $content  String to search for links in.
-	 *         @type string     $target   The target to add to the links.
-	 *         @type array|null $tags     An array of tags to apply to.
-	 *         @type string     $expected Expected output.
+	 *         @type string $content  String to search for links in.
+	 *         @type string $target   The target to add to the links.
+	 *         @type string $tags     An array of tags to apply to.
+	 *         @type string $expected Expected output.
 	 *     }
 	 * }
 	 */

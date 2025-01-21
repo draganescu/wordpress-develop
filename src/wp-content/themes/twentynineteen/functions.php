@@ -384,12 +384,6 @@ require get_template_directory() . '/inc/template-tags.php';
 require get_template_directory() . '/inc/customizer.php';
 
 /**
- * Register block patterns and pattern categories.
- *
- * @since Twenty Nineteen 3.0
+ * Block Patterns.
  */
-function twentynineteen_register_block_patterns() {
-	require get_template_directory() . '/inc/block-patterns.php';
-}
-
-add_action( 'init', 'twentynineteen_register_block_patterns' );
+require get_template_directory() . '/inc/block-patterns.php';

@@ -229,6 +229,10 @@ a.assistive-text:focus {
 .singular .entry-header .entry-meta {
 	padding-left: 0;
 }
+.singular .entry-header .entry-meta {
+	left: auto;
+	right: 0;
+}
 .singular .entry-meta .edit-link a {
 	left: auto;
 	right: 50px;
@@ -352,6 +356,10 @@ section.recent-posts .other-recent-posts .comments-link > span {
 }
 
 /* Singular navigation */
+#nav-single {
+	float: left;
+	text-align: left;
+}
 #nav-single .nav-next {
 	padding-left: 0;
 	padding-right: .5em;
@@ -508,9 +516,6 @@ section.recent-posts .other-recent-posts .comments-link > span {
 	.singular .entry-meta .edit-link a {
 		left: auto;
 		right: 0;
-	}
-	.singular #author-info {
-		margin: 2.2em -8.8% 0;
 	}
 	/* Make sure we have room for our comment avatars */
 	.commentlist > li.comment,

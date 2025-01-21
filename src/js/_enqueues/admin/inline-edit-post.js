@@ -148,12 +148,7 @@ window.wp = window.wp || {};
 		 * Adds onclick events to the apply buttons.
 		 */
 		$('#doaction').on( 'click', function(e){
-			var n,
-				$itemsSelected = $( '#posts-filter .check-column input[type="checkbox"]:checked' );
-
-			if ( $itemsSelected.length < 1 ) {
-				return;
-			}
+			var n;
 
 			t.whichBulkButtonId = $( this ).attr( 'id' );
 			n = t.whichBulkButtonId.substr( 2 );

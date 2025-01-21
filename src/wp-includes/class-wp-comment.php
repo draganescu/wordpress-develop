@@ -351,16 +351,14 @@ final class WP_Comment {
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $name Property to check if set.
-	 * @return bool Whether the property is set.
+	 * @param string $name Property name.
+	 * @return bool
 	 */
 	public function __isset( $name ) {
 		if ( in_array( $name, $this->post_fields, true ) && 0 !== (int) $this->comment_post_ID ) {
 			$post = get_post( $this->comment_post_ID );
 			return property_exists( $post, $name );
 		}
-
-		return false;
 	}
 
 	/**

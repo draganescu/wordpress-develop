@@ -29,9 +29,8 @@ on:
       - '.jshintrc'
       # This file configures PHPCS. Changes could affect the outcome.
       - 'phpcs.xml.dist'
-      # Confirm any changes to relevant workflow files.
-      - '.github/workflows/coding-standards.yml'
-      - '.github/workflows/reusable-coding-standards-*.yml'
+      # Changes to workflow files should always verify all workflows are successful.
+      - '.github/workflows/*.yml'
   workflow_dispatch:
 
 # Cancels all previous workflow runs for pull requests that have not completed.

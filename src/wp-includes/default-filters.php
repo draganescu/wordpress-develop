@@ -153,6 +153,9 @@ foreach ( array( 'content_save_pre', 'excerpt_save_pre', 'comment_save_pre', 'pr
 	add_filter( $filter, 'balanceTags', 50 );
 }
 
+// Add proper rel values for links with target.
+add_action( 'init', 'wp_init_targeted_link_rel_filters' );
+
 // Format strings for display.
 foreach ( array( 'comment_author', 'term_name', 'link_name', 'link_description', 'link_notes', 'bloginfo', 'wp_title', 'document_title', 'widget_title' ) as $filter ) {
 	add_filter( $filter, 'wptexturize' );
@@ -192,7 +195,6 @@ add_filter( 'the_title', 'wptexturize' );
 add_filter( 'the_title', 'convert_chars' );
 add_filter( 'the_title', 'trim' );
 
-add_filter( 'the_content', 'apply_block_hooks_to_content', 8 ); // BEFORE do_blocks().
 add_filter( 'the_content', 'do_blocks', 9 );
 add_filter( 'the_content', 'wptexturize' );
 add_filter( 'the_content', 'convert_smilies', 20 );
@@ -366,13 +368,7 @@ add_action( 'after_switch_theme', '_wp_sidebars_changed' );
 add_action( 'wp_enqueue_scripts', 'wp_enqueue_emoji_styles' );
 add_action( 'wp_print_styles', 'print_emoji_styles' ); // Retained for backwards-compatibility. Unhooked by wp_enqueue_emoji_styles().
 
-if (
-	// Comment reply link.
-	isset( $_GET['replytocom'] )
-	||
-	// Unapproved comment preview.
-	( isset( $_GET['unapproved'] ) && isset( $_GET['moderation-hash'] ) )
-) {
+if ( isset( $_GET['replytocom'] ) ) {
 	add_filter( 'wp_robots', 'wp_robots_no_robots' );
 }
 
@@ -574,7 +570,6 @@ add_action( 'set_current_user', 'kses_init' );
 // Script Loader.
 add_action( 'wp_default_scripts', 'wp_default_scripts' );
 add_action( 'wp_default_scripts', 'wp_default_packages' );
-add_action( 'wp_default_scripts', 'wp_default_script_modules' );
 
 add_action( 'wp_enqueue_scripts', 'wp_localize_jquery_ui_datepicker', 1000 );
 add_action( 'wp_enqueue_scripts', 'wp_common_block_scripts_and_styles' );
@@ -618,7 +613,6 @@ add_action( 'wp_footer', 'wp_enqueue_stored_styles', 1 );
 add_action( 'wp_default_styles', 'wp_default_styles' );
 add_filter( 'style_loader_src', 'wp_style_loader_src', 10, 2 );
 
-add_action( 'wp_head', 'wp_print_auto_sizes_contain_css_fix', 1 );
 add_action( 'wp_head', 'wp_maybe_inline_styles', 1 ); // Run for styles enqueued in <head>.
 add_action( 'wp_footer', 'wp_maybe_inline_styles', 1 ); // Run for late-loaded styles in the footer.
 
@@ -766,16 +760,10 @@ add_action( 'init', '_wp_register_default_font_collections' );
 add_filter( 'rest_pre_insert_wp_template', 'inject_ignored_hooked_blocks_metadata_attributes' );
 add_filter( 'rest_pre_insert_wp_template_part', 'inject_ignored_hooked_blocks_metadata_attributes' );
 
-// Update ignoredHookedBlocks postmeta for some post types.
-add_filter( 'rest_pre_insert_page', 'update_ignored_hooked_blocks_postmeta' );
-add_filter( 'rest_pre_insert_post', 'update_ignored_hooked_blocks_postmeta' );
-add_filter( 'rest_pre_insert_wp_block', 'update_ignored_hooked_blocks_postmeta' );
+// Update ignoredHookedBlocks postmeta for wp_navigation post type.
 add_filter( 'rest_pre_insert_wp_navigation', 'update_ignored_hooked_blocks_postmeta' );
 
-// Inject hooked blocks into the Posts endpoint REST response for some given post types.
-add_filter( 'rest_prepare_page', 'insert_hooked_blocks_into_rest_response', 10, 2 );
-add_filter( 'rest_prepare_post', 'insert_hooked_blocks_into_rest_response', 10, 2 );
-add_filter( 'rest_prepare_wp_block', 'insert_hooked_blocks_into_rest_response', 10, 2 );
+// Inject hooked blocks into the wp_navigation post type REST response.
 add_filter( 'rest_prepare_wp_navigation', 'insert_hooked_blocks_into_rest_response', 10, 2 );
 
 unset( $filter, $action );

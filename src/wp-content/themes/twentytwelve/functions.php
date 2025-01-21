@@ -140,15 +140,9 @@ add_action( 'after_setup_theme', 'twentytwelve_setup' );
 require get_template_directory() . '/inc/custom-header.php';
 
 /**
- * Register block patterns and pattern categories.
- *
- * @since Twenty Twelve 4.4
+ * Add block patterns.
  */
-function twentytwelve_register_block_patterns() {
-	require get_template_directory() . '/inc/block-patterns.php';
-}
-
-add_action( 'init', 'twentytwelve_register_block_patterns' );
+require get_template_directory() . '/inc/block-patterns.php';
 
 if ( ! function_exists( 'twentytwelve_get_font_url' ) ) :
 	/**
@@ -212,13 +206,13 @@ function twentytwelve_scripts_styles() {
 	}
 
 	// Loads our main stylesheet.
-	wp_enqueue_style( 'twentytwelve-style', get_stylesheet_uri(), array(), '20241112' );
+	wp_enqueue_style( 'twentytwelve-style', get_stylesheet_uri(), array(), '20240716' );
 
 	// Theme block stylesheet.
-	wp_enqueue_style( 'twentytwelve-block-style', get_template_directory_uri() . '/css/blocks.css', array( 'twentytwelve-style' ), '20240812' );
+	wp_enqueue_style( 'twentytwelve-block-style', get_template_directory_uri() . '/css/blocks.css', array( 'twentytwelve-style' ), '20240603' );
 
 	// Loads the Internet Explorer specific stylesheet.
-	wp_enqueue_style( 'twentytwelve-ie', get_template_directory_uri() . '/css/ie.css', array( 'twentytwelve-style' ), '20240722' );
+	wp_enqueue_style( 'twentytwelve-ie', get_template_directory_uri() . '/css/ie.css', array( 'twentytwelve-style' ), '20150214' );
 	$wp_styles->add_data( 'twentytwelve-ie', 'conditional', 'lt IE 9' );
 }
 add_action( 'wp_enqueue_scripts', 'twentytwelve_scripts_styles' );
@@ -230,7 +224,7 @@ add_action( 'wp_enqueue_scripts', 'twentytwelve_scripts_styles' );
  */
 function twentytwelve_block_editor_styles() {
 	// Block styles.
-	wp_enqueue_style( 'twentytwelve-block-editor-style', get_template_directory_uri() . '/css/editor-blocks.css', array(), '20240811' );
+	wp_enqueue_style( 'twentytwelve-block-editor-style', get_template_directory_uri() . '/css/editor-blocks.css', array(), '20240506' );
 	// Add custom fonts.
 	$font_version = ( 0 === strpos( (string) twentytwelve_get_font_url(), get_template_directory_uri() . '/' ) ) ? '20230328' : null;
 	wp_enqueue_style( 'twentytwelve-fonts', twentytwelve_get_font_url(), array(), $font_version );

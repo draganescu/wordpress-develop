@@ -46,15 +46,11 @@ if ( version_compare( $GLOBALS['wp_version'], '3.6-alpha', '<' ) ) {
 }
 
 /**
- * Register block patterns and pattern categories.
+ * Block Patterns.
  *
- * @since Twenty Thirteen 4.3
+ * @since Twenty Thirteen 3.4
  */
-function twentythirteen_register_block_patterns() {
-	require get_template_directory() . '/inc/block-patterns.php';
-}
-
-add_action( 'init', 'twentythirteen_register_block_patterns' );
+require get_template_directory() . '/inc/block-patterns.php';
 
 /**
  * Twenty Thirteen setup.
@@ -344,7 +340,7 @@ function twentythirteen_scripts_styles() {
 	wp_enqueue_style( 'genericons', get_template_directory_uri() . '/genericons/genericons.css', array(), '3.0.3' );
 
 	// Loads our main stylesheet.
-	wp_enqueue_style( 'twentythirteen-style', get_stylesheet_uri(), array(), '20241112' );
+	wp_enqueue_style( 'twentythirteen-style', get_stylesheet_uri(), array(), '20240716' );
 
 	// Theme block stylesheet.
 	wp_enqueue_style( 'twentythirteen-block-style', get_template_directory_uri() . '/css/blocks.css', array( 'twentythirteen-style' ), '20240520' );
@@ -388,7 +384,7 @@ function twentythirteen_resource_hints( $urls, $relation_type ) {
  */
 function twentythirteen_block_editor_styles() {
 	// Block styles.
-	wp_enqueue_style( 'twentythirteen-block-editor-style', get_template_directory_uri() . '/css/editor-blocks.css', array(), '20240716' );
+	wp_enqueue_style( 'twentythirteen-block-editor-style', get_template_directory_uri() . '/css/editor-blocks.css', array(), '20240506' );
 	// Add custom fonts.
 	$font_version = ( 0 === strpos( (string) twentythirteen_fonts_url(), get_template_directory_uri() . '/' ) ) ? '20230328' : null;
 	wp_enqueue_style( 'twentythirteen-fonts', twentythirteen_fonts_url(), array(), $font_version );
