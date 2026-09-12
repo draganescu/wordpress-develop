@@ -832,7 +832,7 @@ function wp_uninitialize_site( $site_id ) {
 	$drop_tables = apply_filters( 'wpmu_drop_tables', $tables, $site->id );
 
 	foreach ( (array) $drop_tables as $table ) {
-		$wpdb->query( "DROP TABLE IF EXISTS `$table`" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( "DROP TABLE IF EXISTS `$table`" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
 	/**
@@ -1022,6 +1022,8 @@ function clean_blog_cache( $blog ) {
 /**
  * Adds metadata to a site.
  *
+ * For historical reasons both the meta key and the meta value are expected to be "slashed" (slashes escaped) on input.
+ *
  * @since 5.1.0
  *
  * @param int    $site_id    Site ID.
@@ -1047,6 +1049,8 @@ function add_site_meta( $site_id, $meta_key, $meta_value, $unique = false ) {
  * You can match based on the key, or key and value. Removing based on key and
  * value, will keep from removing duplicate metadata with the same key. It also
  * allows removing all metadata matching key, if needed.
+ *
+ * For historical reasons both the meta key and the meta value are expected to be "slashed" (slashes escaped) on input.
  *
  * @since 5.1.0
  *
@@ -1090,10 +1094,12 @@ function get_site_meta( $site_id, $key = '', $single = false ) {
 /**
  * Updates metadata for a site.
  *
- * Use the $prev_value parameter to differentiate between meta fields with the
+ * Use the `$prev_value` parameter to differentiate between meta fields with the
  * same key and site ID.
  *
  * If the meta field for the site does not exist, it will be added.
+ *
+ * For historical reasons both the meta key and the meta value are expected to be "slashed" (slashes escaped) on input.
  *
  * @since 5.1.0
  *
@@ -1121,6 +1127,32 @@ function update_site_meta( $site_id, $meta_key, $meta_value, $prev_value = '' ) 
  */
 function delete_site_meta_by_key( $meta_key ) {
 	return delete_metadata( 'blog', null, $meta_key, '', true );
+}
+
+/**
+ * Registers a meta key for sites.
+ *
+ * @since 7.2.0
+ *
+ * @param string $meta_key The meta key to register.
+ * @param array  $args     Data used to describe the meta key when registered. See
+ *                         {@see register_meta()} for a list of supported arguments.
+ * @return bool True if the meta key was successfully registered, false if not.
+ */
+function register_site_meta( $meta_key, array $args ) {
+	return register_meta( 'blog', $meta_key, $args );
+}
+
+/**
+ * Unregisters a meta key for sites.
+ *
+ * @since 7.2.0
+ *
+ * @param string $meta_key The meta key to unregister.
+ * @return bool True on success, false if the meta key was not previously registered.
+ */
+function unregister_site_meta( $meta_key ) {
+	return unregister_meta_key( 'blog', $meta_key );
 }
 
 /**
@@ -1237,7 +1269,7 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
 		if ( '1' === $new_site->deleted ) {
 
 			/**
-			 * Fires when the 'deleted' status is added to a site.
+			 * Fires when the 'flagged for deletion' status is added to a site.
 			 *
 			 * @since 3.5.0
 			 *
@@ -1247,7 +1279,7 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
 		} else {
 
 			/**
-			 * Fires when the 'deleted' status is removed from a site.
+			 * Fires when the 'flagged for deletion' status is removed from a site.
 			 *
 			 * @since 3.5.0
 			 *
