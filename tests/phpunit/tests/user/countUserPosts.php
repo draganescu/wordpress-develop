@@ -58,6 +58,11 @@ class Tests_User_CountUserPosts extends WP_UnitTestCase {
 		register_post_type( 'wptests_pt' );
 	}
 
+	public function tear_down() {
+		unregister_post_type( 'wptests_pt' );
+		parent::tear_down();
+	}
+
 	public function test_count_user_posts_post_type_should_default_to_post() {
 		$this->assertSame( '4', count_user_posts( self::$user_id ) );
 	}
@@ -91,7 +96,7 @@ class Tests_User_CountUserPosts extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Post count be correct after reassigning posts to another user.
+	 * Post count should be correct after reassigning posts to another user.
 	 *
 	 * @ticket 39242
 	 */
@@ -116,7 +121,7 @@ class Tests_User_CountUserPosts extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Post count be correct after deleting user without reassigning posts.
+	 * Post count should be correct after deleting user without reassigning posts.
 	 *
 	 * @ticket 39242
 	 */
@@ -156,7 +161,12 @@ class Tests_User_CountUserPosts extends WP_UnitTestCase {
 	 */
 	public function test_count_user_posts_for_user_created_after_being_assigned_posts() {
 		global $wpdb;
-		$next_user_id = (int) $wpdb->get_var( "SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES WHERE table_name = '$wpdb->users'" );
+		$next_user_id = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s',
+				$wpdb->users
+			)
+		);
 
 		// Assign post to next user.
 		self::factory()->post->create(
@@ -186,7 +196,7 @@ class Tests_User_CountUserPosts extends WP_UnitTestCase {
 	 * @ticket 39242
 	 */
 	public function test_cache_should_be_hit_regardless_of_post_type_order() {
-		// Prime Cache.
+		// Prime cache.
 		count_user_posts( self::$user_id, array( 'wptests_pt', 'post' ) );
 
 		$query_num_start = get_num_queries();
@@ -202,7 +212,7 @@ class Tests_User_CountUserPosts extends WP_UnitTestCase {
 	 * @ticket 39242
 	 */
 	public function test_cache_should_be_hit_for_string_and_array_equivalent_queries() {
-		// Prime Cache.
+		// Prime cache.
 		count_user_posts( self::$user_id, 'post' );
 
 		$query_num_start = get_num_queries();
@@ -218,7 +228,7 @@ class Tests_User_CountUserPosts extends WP_UnitTestCase {
 	 * @ticket 39242
 	*/
 	public function test_cache_should_be_hit_for_and_array_duplicates_equivalent_queries() {
-		// Prime Cache
+		// Prime cache.
 		count_user_posts( self::$user_id, array( 'post', 'post', 'post' ) );
 
 		$query_num_start = get_num_queries();
